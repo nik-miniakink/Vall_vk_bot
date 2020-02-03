@@ -2,6 +2,7 @@ import vk_interaction as vk_i
 from vk_interaction import *  # никогда так нельзя импортировать делать, но сейчас я так хочу
 from datetime import datetime
 import base as bg
+from operations import *
 
 
 def check_message():
@@ -53,15 +54,16 @@ def talk_messages(dialog):
 
 def near_games():
     """формирование ответа на вопрос, когда ближайшая БИ"""
-    for game in bg.games:
-        begin_date = game['дата'].split("-")
+    games = get_game()
+    for game in games:
+        begin_date = game.date.split("-")
         begin_date = begin_date[0].split('.')
         date_of_game = datetime(2020, int(begin_date[1]), int(begin_date[0]))
 
         if date_of_game > datetime.now():
             r = date_of_game - datetime.now()
-            message1 = f'Ближайшая игра "{game["название"]}" будет {game["дата"]}, ' \
-                       f'в городе {game["город"].title()}, организаторы {game["орагнизаторы"]}.'
+            message1 = f'Ближайшая игра "{game.title}" будет {game.date}, ' \
+                       f'в городе {game.citi.title()}, организаторы {game.orgs}.'
             message2 = f'До игры осталось {r.days} дней.'
             return vk_i.send_message(message1), vk_i.send_message(message2)
 
@@ -71,14 +73,15 @@ def mounthly_games():
     now = datetime.now()
     noun = True
     vk_i.send_message('В этом месяце')
-    for game in bg.games:
-        begin_date = game['дата'].split("-")
+    games=get_game()
+    for game in games:
+        begin_date = game.date.split("-")
         begin_date = begin_date[0].split('.')
         date_of_game = datetime(2020, int(begin_date[1]), int(begin_date[0]))
 
         if now.month == date_of_game.month:
-            vk_i.send_message(f'"{game["название"]}" будет в {game["дата"]}, '
-                              f'в городе {game["город"].title()}, организаторы {game["орагнизаторы"]}.')
+            vk_i.send_message(f'"{game.title}" будет в {game.date}, '
+                              f'в городе {game.citi.title()}, организаторы {game.orgs}.')
 
         if date_of_game.month > now.month and noun:
             noun = False

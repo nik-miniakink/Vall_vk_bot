@@ -3,13 +3,14 @@ from vk_api.upload import VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from random import randint
 import weather as w
+import sec_and_pass as p
 
 
 """Модуль для авторизации в API VK
 token: уникальный токен, для подключения от именни сообщества, текущий токен имеет все права
 vk_session: авторизация в ВК для сообщества, с использованием токена"""
 
-token = ""
+token = p.token
 vk_session = vk_api.VkApi(token=token)
 vk = vk_session.get_api()
 
@@ -21,7 +22,7 @@ def random_id():
     return random_noun
 
 
-longpoll = VkBotLongPoll(vk_session, group_id="190644461")
+longpoll = VkBotLongPoll(vk_session, group_id=p.id)
 send_photo = VkUpload(vk_session)  # присваиваю короткое имя для модуля VkUpload
 
 
