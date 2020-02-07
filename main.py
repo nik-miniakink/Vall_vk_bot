@@ -8,35 +8,38 @@ from operations import *
 def check_message():
     """функция ожидания события, прихода сообщения"""
     message = wait_message()  # данная функция находится в модуле vk_interaction.py wait_message()
-    appeal_to_vall = ['велл', 'вэлл', 'велл,', 'вэлл,'] # список для проверки, что сообщение адресовано Велл
-    check = message.split()  # превращение строки сообщения в список
-    if check[0].lower() in appeal_to_vall:  # проверка, что начало сообщения содержит обращение к Велл
-        del check[0]
-        check_what_wont(check)
+    appeal_to_vall = ['велл', 'вэлл']  # список для проверки, что сообщение адресовано Велл
+    message_as_list = (message.split()).lower  # превращение строки сообщения в список в нижнем регистре
+    if message_as_list[0] in appeal_to_vall:  # проверка, что начало сообщения содержит обращение к Велл
+        check_what_wont(message_as_list)
+    else:
+        vk_i.send_message('А вы к кому сейчас обращаетесь?')  # или тут принт? или отправить сообщение через VK?
 
 
-def check_what_wont(word):
+def check_what_wont(message):
     """Проверка того, что спрашивается в сообщении"""
     hello = ['привет', 'дела?', 'здравствуй', 'дела']
     weather = ['погода', 'прогноз', 'погоды', 'погоду']
     schedule = {1: 'когда ближайшая БИ?', 2: 'игры в этом месяце', 3: 'оставшиеся игры?', }
-    who_are_you = ['расскажи о себе', 'расскажи о себе.']
-    list_query = ' '.join(word)
+    who_are_you = ['расскажи о себе', 'расскажи о себе.']  # повторяющиеся значения
+    list_query = ' '.join(message)  # Зачем ведь она у нас изначально есть  в виде message bp ghtlsleotq aeyrwbb
 
     for message in hello:
-        if message in word:
+        if message in message:
             talk_messages(message)
 
     for message in weather:
-        if message in word:
-            return vk_i.send_message_png(word)
+        if message in message:
+            return vk_i.send_message_png(message)
 
     for key, value in schedule.items():
         if value in list_query:
             if key == 1:
                 near_games()
-            if key == 2:
+            elif key == 2:
                 mounthly_games()
+            #else:
+             #  № тут должна быть функция выводящая оставщиеся игр
 
     if list_query in who_are_you:
         about_vell()
